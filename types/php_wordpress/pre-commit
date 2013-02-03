@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# PHP checks
+for f in `git diff --cached --name-status --diff-filter=ACM | grep -Eo -e '[^[:blank:]]*?\.php$'`; do
+  php -l "$f"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+done
+
+# SCSS checks
+if [ `git diff --cached --name-status --diff-filter=ACM | grep -Eo -e '[^[:blank:]]*?\.scss$' | wc -l | sed 's/[^0-9]//g'` -ne 0 ]; then
+  # A SCSS file is staged for commit.
+  scss -C -c -f "style.css.scss"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+fi
+
+exit 0
