@@ -1,0 +1,11 @@
+#!/bin/bash
+
+for f in `git diff --cached --name-status --diff-filter=ACM | grep -Eo -e '[^[:blank:]]*?\.php$'`; do
+  php -l "$f"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+done
+
+exit 0
+
