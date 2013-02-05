@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Compass checks
+if [ `git diff --cached --name-status --diff-filter=ACM | grep -Eo -e '[^[:blank:]]*?\.scss$' | wc -l | sed 's/[^0-9]//g'` -ne 0 ]; then
+  # A SCSS file is staged for commit.
+  for f in "ie" "mobile" "print" "style"; do
+    echo "Checking sass/$f.scss"
+    if [ -f "sass/$f.scss" ]; then
+      scss -C -c -f --compass "sass/$f.scss"
+      if [ $? -ne 0 ]; then
+        exit 1
+      fi
+    fi
+  done
+fi
+
+exit 0
